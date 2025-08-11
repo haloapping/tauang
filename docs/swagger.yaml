@@ -1,0 +1,219 @@
+basePath: /
+definitions:
+  user.loginReq:
+    properties:
+      password:
+        type: string
+        x-order: "4"
+      username:
+        type: string
+        x-order: "1"
+    required:
+    - password
+    - username
+    type: object
+  user.loginResp:
+    properties:
+      token:
+        type: string
+        x-order: "1"
+    type: object
+  user.registerReq:
+    properties:
+      confirmPassword:
+        type: string
+        x-order: "5"
+      email:
+        type: string
+        x-order: "2"
+      password:
+        type: string
+        x-order: "4"
+      phone:
+        type: string
+        x-order: "3"
+      username:
+        type: string
+        x-order: "1"
+    required:
+    - confirmPassword
+    - email
+    - password
+    - phone
+    - username
+    type: object
+  user.registerResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/user.user'
+        x-order: "2"
+      message:
+        type: string
+        x-order: "1"
+    type: object
+  user.user:
+    properties:
+      createdAt:
+        type: string
+        x-order: "5"
+      email:
+        type: string
+        x-order: "2"
+      phone:
+        type: string
+        x-order: "3"
+      updatedAt:
+        type: string
+        x-order: "6"
+      username:
+        type: string
+        x-order: "1"
+    type: object
+  wallet.createWalletReq:
+    properties:
+      currency:
+        type: string
+        x-order: "4"
+      description:
+        type: string
+        x-order: "3"
+      name:
+        type: string
+        x-order: "2"
+      userID:
+        type: string
+        x-order: "1"
+    required:
+    - currency
+    - description
+    - name
+    - userID
+    type: object
+  wallet.singleWalletResp:
+    properties:
+      data:
+        allOf:
+        - $ref: '#/definitions/wallet.wallet'
+        x-order: "2"
+      message:
+        type: string
+        x-order: "1"
+    required:
+    - data
+    - message
+    type: object
+  wallet.wallet:
+    properties:
+      ID:
+        type: string
+        x-order: "1"
+      createdAt:
+        type: string
+        x-order: "6"
+      currency:
+        type: string
+        x-order: "5"
+      description:
+        type: string
+        x-order: "4"
+      name:
+        type: string
+        x-order: "3"
+      updatedAt:
+        type: string
+        x-order: "7"
+      userID:
+        type: string
+        x-order: "2"
+    required:
+    - ID
+    - createdAt
+    - currency
+    - description
+    - name
+    - updatedAt
+    - userID
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: tauang API.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: tauang API
+  version: "1.0"
+paths:
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: Login User Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.loginResp'
+      summary: Login user
+      tags:
+      - users
+  /users/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user
+      parameters:
+      - description: Register User Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/user.registerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.registerResp'
+      summary: Register user
+      tags:
+      - users
+  /wallets:
+    post:
+      consumes:
+      - application/json
+      description: Create new wallet
+      parameters:
+      - description: Create new wallet request
+        in: body
+        name: wallet
+        required: true
+        schema:
+          $ref: '#/definitions/wallet.createWalletReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/wallet.singleWalletResp'
+      summary: Create new wallet
+      tags:
+      - wallets
+securityDefinitions:
+  JWT:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
