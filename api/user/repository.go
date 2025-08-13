@@ -1,9 +1,8 @@
 package user
 
 import (
-	"database/sql"
-
 	"github.com/google/uuid"
+	"github.com/guregu/null/v6"
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -27,8 +26,8 @@ type userRegisterDB struct {
 	Email     string
 	Phone     string
 	Password  string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	CreatedAt null.Time
+	UpdatedAt null.Time
 }
 
 func (r userRepository) register(c echo.Context, req registerReq) (userRegisterDB, error) {

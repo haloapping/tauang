@@ -1,8 +1,6 @@
 package wallet
 
 import (
-	"database/sql"
-
 	"github.com/google/uuid"
 	"github.com/huandu/go-sqlbuilder"
 	"github.com/jackc/pgx/v5"
@@ -20,20 +18,10 @@ func NewWalletRepository(pool *pgxpool.Pool) walletRepository {
 	}
 }
 
-type walletDB struct {
-	ID          string
-	UserID      string
-	Name        string
-	Description string
-	Currency    string
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (r walletRepository) create(c echo.Context, req createWalletReq) (walletDB, error) {
+func (r walletRepository) create(c echo.Context, req createWalletReq) (wallet, error) {
 	tx, err := r.Pool.BeginTx(c.Request().Context(), pgx.TxOptions{})
 	if err != nil {
-		return walletDB{}, err
+		return wallet{}, err
 	}
 	defer func() {
 		if err != nil {
@@ -51,20 +39,20 @@ func (r walletRepository) create(c echo.Context, req createWalletReq) (walletDB,
 	ib.Returning("*")
 	q, args := ib.Build()
 
-	var w walletDB
+	var w wallet
 	row := tx.QueryRow(c.Request().Context(), q, args...)
 	err = row.Scan(&w.ID, &w.UserID, &w.Name, &w.Description, &w.Currency, &w.CreatedAt, &w.UpdatedAt)
 	if err != nil {
-		return walletDB{}, err
+		return wallet{}, err
 	}
 
 	return w, nil
 }
 
-func (r walletRepository) findByID(c echo.Context, ID string) (walletDB, error) {
+func (r walletRepository) findByID(c echo.Context, ID string) (wallet, error) {
 	tx, err := r.Pool.BeginTx(c.Request().Context(), pgx.TxOptions{})
 	if err != nil {
-		return walletDB{}, err
+		return wallet{}, err
 	}
 	defer func() {
 		if err != nil {
@@ -81,19 +69,19 @@ func (r walletRepository) findByID(c echo.Context, ID string) (walletDB, error) 
 	q, args := sb.Build()
 
 	row := tx.QueryRow(c.Request().Context(), q, args...)
-	var w walletDB
+	var w wallet
 	err = row.Scan(&w.ID, &w.UserID, &w.Name, &w.Description, &w.Currency, &w.CreatedAt, &w.UpdatedAt)
 	if err != nil {
-		return walletDB{}, err
+		return wallet{}, err
 	}
 
 	return w, nil
 }
 
-func (r walletRepository) findAll(c echo.Context, req createWalletReq) ([]walletDB, error) {
+func (r walletRepository) findAll(c echo.Context, req createWalletReq) ([]wallet, error) {
 	tx, err := r.Pool.BeginTx(c.Request().Context(), pgx.TxOptions{})
 	if err != nil {
-		return []walletDB{}, err
+		return []wallet{}, err
 	}
 	defer func() {
 		if err != nil {
@@ -110,14 +98,14 @@ func (r walletRepository) findAll(c echo.Context, req createWalletReq) ([]wallet
 
 	rows, err := tx.Query(c.Request().Context(), q, args...)
 	if err != nil {
-		return []walletDB{}, err
+		return []wallet{}, err
 	}
-	var wallets []walletDB
+	var wallets []wallet
 	for rows.Next() {
-		var w walletDB
+		var w wallet
 		err := rows.Scan(&w.ID, &w.UserID, &w.Name, &w.Description, &w.Currency, &w.CreatedAt, &w.UpdatedAt)
 		if err != nil {
-			return []walletDB{}, err
+			return []wallet{}, err
 		}
 		wallets = append(wallets, w)
 	}

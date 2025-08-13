@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/guregu/null/v6"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -24,8 +25,8 @@ type userRegister struct {
 	Username  string
 	Email     string
 	Phone     string
-	CreatedAt string
-	UpdatedAt string
+	CreatedAt null.Time
+	UpdatedAt null.Time
 }
 
 func (s userService) register(c echo.Context, req registerReq) (userRegister, error) {
@@ -39,8 +40,8 @@ func (s userService) register(c echo.Context, req registerReq) (userRegister, er
 		Username:  u.Username,
 		Email:     u.Email,
 		Phone:     u.Phone,
-		CreatedAt: u.CreatedAt.Time.String(),
-		UpdatedAt: u.UpdatedAt.Time.String(),
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
 	}
 
 	return ur, nil

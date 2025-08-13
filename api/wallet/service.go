@@ -18,15 +18,5 @@ func (s walletService) create(c echo.Context, req createWalletReq) (wallet, erro
 		return wallet{}, err
 	}
 
-	walletItem := wallet{
-		ID:          w.ID,
-		UserID:      w.UserID,
-		Name:        w.Name,
-		Description: w.Description,
-		Currency:    w.Currency,
-		CreatedAt:   w.CreatedAt.Time.String(),
-		UpdatedAt:   w.UpdatedAt.Time.String(),
-	}
-
-	return walletItem, nil
+	return w, nil
 }
